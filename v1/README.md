@@ -1,69 +1,68 @@
-# AI SDLC Starter Kit — v1
+# Agentic SDLC Starter Kit
 
-The complete, real file set behind a gated, agent-driven development
-pipeline — extracted from **Kid Storytime**, a shipped iOS app whose code
-is written almost entirely by AI coding agents. Nothing here is a mockup:
-every file below ran (and runs) in production, catching real bugs on the
-way to the App Store.
+This is a copyable repository skeleton, not a framework. Replace every `<placeholder>` and `TODO` with facts and commands from your project before invoking the skills.
 
-**The idea in one paragraph:** agents write the code, so the failure mode
-isn't typos — it's *confident drift*. The cure is two kinds of files and
-one script. Markdown the agent **reads** (a constitution, rules that cite
-their scars, decision records, story cards). Markdown the agent
-**executes** (six slash-command skills, one per pipeline stage). And one
-shell gate wired into a git pre-commit hook — the only part the agent
-can't talk its way past.
+## Choose the instruction entry point
 
-## The pipeline
+- Claude Code: keep `CLAUDE.md`. Its `@AGENTS.md` import loads the canonical constitution and it may add only Claude-specific loading notes.
+- Multiple coding agents: keep `AGENTS.md` as the canonical shared instructions and retain the small `CLAUDE.md` adapter.
+- Another single harness: use its recognized project instruction filename and port the contents of `AGENTS.md`.
 
+Do not retain two independent constitutions. They will drift.
+
+## Install
+
+1. Copy this folder's contents into a repository that already has a real test suite.
+2. Fill in `AGENTS.md`, rule files, `docs/SDLC.md`, and the scripts. Keep `CLAUDE.md` as a thin adapter if you use Claude Code.
+3. Add real product, test, infrastructure, deployment, and component documentation.
+4. Configure the repository toolchain step in `.github/workflows/sdlc-gate.yml` or port it to your CI system.
+5. Run `bash scripts/sdlc-gate.sh --fast` until it is green.
+6. Run `bash scripts/install-hooks.sh` once per clone.
+7. Protect the default branch or ruleset, require the CI gate, and configure code-owner review for instruction, gate, workflow, dependency, test-policy, and deploy-control files.
+8. Configure the coding-agent sandbox, allowed tools, filesystem scope, network egress, and task-scoped credentials for your threat model.
+9. Write `docs/backlog/STORY-001-<slug>.md` from the template and complete its ready checklist.
+10. Invoke `/plan-task` and run one real story through all seven stages.
+11. Confirm the required CI check blocks a deliberately broken change and that the agent cannot silently change the check that defines success.
+
+## Safety
+
+- The template gate fails until its TODO test commands are replaced.
+- Local Git hooks are bypassable and not copied by clone. Mirror the gate in CI for team use.
+- Markdown instructions, skills, reviewers, hooks, tests, and CI are control-plane code, not a security boundary by themselves. Protect their definitions from unilateral agent changes.
+- Treat issue text, pull requests, logs, web content, documents, tool output, and cross-agent handoffs as untrusted until verified.
+- Do not put secrets, production credentials, or live infrastructure IDs in agent files.
+- Keep deployment and destructive permissions away from development stages. Prefer sandboxed execution, controlled egress, and short-lived task-scoped credentials.
+- A passing agent-written test is necessary evidence, not independent proof. Review test diffs and require counterexamples for changed critical tests.
+- Do not copy another organization's rules. Derive rules, risk tiers, and reviewers from your product's failures and obligations.
+
+## What the public kit includes
+
+- a short portable constitution plus a Claude adapter;
+- story readiness, risk tier, human checkpoint, change-record, and Definition of Done templates;
+- seven unnumbered, verb-led skills with explicit inputs, artifacts, stop conditions, and evidence-named states;
+- architecture, security, design, naming, and testing rules;
+- read-only architecture, security, documentation, and test-quality reviewers;
+- local and CI gate examples, including change-record and Markdown-link checks, that fail closed until configured.
+- control-plane, untrusted-input, scoped-authority, test-integrity, process-evaluation, and measurement guidance for hardening beyond a solo version one.
+
+## Before team use
+
+The starter kit establishes Level 2 of the maturity model in `docs/SDLC.md`: a working repository-native evidence lifecycle. Team use requires Level 3 controls appropriate to the product's threat model: required remote CI, protected process files, sandboxing, scoped credentials and egress, process evaluations, telemetry, and protected deployment authority.
+
+Create `.github/CODEOWNERS` with your real accountable team or user, then protect the file itself and require code-owner review. A starting pattern is:
+
+```text
+/AGENTS.md                         @your-control-owner
+/CLAUDE.md                         @your-control-owner
+/.claude/                          @your-control-owner
+/scripts/                          @your-control-owner
+/.github/workflows/                @your-control-owner
+/docs/rules/                       @your-control-owner
+/docs/TESTS.md                     @your-test-owner
+/<dependency-manifest>             @your-dependency-owner
+/<dependency-lockfile>             @your-dependency-owner
+/<deployment-config-path>          @your-deployment-owner
+/.github/CODEOWNERS                @your-control-owner
 ```
-/1-plan-story → /2-validate-plan → /3-implement → /4-test → /5-code-review → /6-ship
-```
 
-Each stage is a skill file that ends in an artifact the next stage
-requires. One plan file per story travels the whole pipe and accretes its
-validation findings, test evidence, review report, and ship proof — when
-the story ships, the plan is its audit log.
-
-## What's in the box
-
-| Path | What it is |
-|---|---|
-| `CLAUDE.md` | The constitution: ten never-negotiable rules, auto-loaded every session |
-| `.claude/skills/1…6/SKILL.md` | The six pipeline stages as executable skills |
-| `.claude/agents/*.md` | Four specialist reviewers — security, App Store, SwiftUI, doc-drift — each one obsession + a checklist distilled from a real audit |
-| `docs/rules/*.md` | Coding law per surface; every rule cites the shipped bug that created it |
-| `docs/decisions/` | ADR template + two real decision records |
-| `docs/backlog/` | Story template + a real story card |
-| `docs/storyPlans/` | Two real plan files — including a test-forensics investigation, findings and all |
-| `scripts/` | The mechanical gate: `sdlc-gate.sh`, the doc-drift checker, link checker, hook installer |
-| `docs/sample-gate-output.txt` | What a passing gate run actually prints |
-
-## Build yours in a weekend
-
-Order matters — **enforcement before ceremony**:
-
-1. Write your constitution (`CLAUDE.md`): ten rules you'd never waive.
-2. Wire the gate: one script running your tests + consistency checks,
-   installed as a pre-commit hook. This is the step that makes the rest real.
-3. One rule file per surface you fear — seed each from a real bug you shipped.
-4. Record standing decisions as ADRs so no future session re-argues them.
-5. Adapt the six skills — keep the entry artifact / exit artifact / gate
-   of each stage, swap the commands for your stack.
-6. One reviewer agent per risk surface — run a deep audit first;
-   its findings are the checklist.
-7. Write your first story card.
-8. Run it through `/1` → `/6`.
-
-## Adapting it
-
-The mechanisms are stack-agnostic; the *examples* are not. Swift rules,
-`xcodebuild` commands, App Store checklists, and AWS deploy steps are
-this app's — swap them for yours. What transfers unchanged: the plan as
-contract, adversarial validation before code, specialists over
-generalists, docs moving in the same commit as behavior, and a hook that
-doesn't care how confident the agent sounds.
-
-## License
-
-MIT — see [LICENSE](LICENSE). Use it, fork it, ship with it.
+CODEOWNERS requests review; repository rules must make that review and the `sdlc-gate` status check mandatory. Replace every placeholder before relying on this control.

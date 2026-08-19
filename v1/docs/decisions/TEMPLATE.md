@@ -1,21 +1,25 @@
-# ADR-NNN — Title (imperative, the decision itself)
+# ADR-NNN: <Decision stated directly>
 
-- **Date:** YYYY-MM-DD
-- **Status:** Accepted | Superseded by ADR-NNN
-- **Surfaces:** iOS / backend / web / infra / process
+- Date: YYYY-MM-DD
+- Status: Accepted | Superseded by ADR-NNN
+- Owner: <human accountable for the decision>
+- Surfaces: <list>
+- Evidence: <incident, benchmark, requirement, or experiment>
 
 ## Context
-What forced a decision. Two to five sentences — the pressure, not the
-history of the universe.
+
+What pressure forced a decision. State facts and constraints.
 
 ## Decision
-What we chose, stated so an agent can act on it without asking.
+
+What the project chose, written so an agent can act without asking again.
 
 ## Consequences
-What this makes easy, what it makes hard, what it forbids. Include the
-tripwire: how we'd notice this decision has stopped being right.
 
----
-*ADRs are read-only after acceptance. Agents consult them in /1 before
-making choices and never re-litigate one in a plan — superseding one
-requires a new ADR and a human call.*
+What becomes easier, what becomes harder, what is forbidden, and the tripwire that would tell us the decision stopped being correct.
+
+## Review trigger
+
+Name the measurable event, new constraint, or date that requires this decision to be reconsidered.
+
+Accepted ADRs are read only. Superseding one requires a new ADR and human approval.
