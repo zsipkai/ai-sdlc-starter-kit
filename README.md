@@ -12,8 +12,8 @@ forever; improvements land as the next version.
 
 | Version | Pairs with | Status |
 |---|---|---|
-| **[v2](v2/)** | *How I Cut My Agentic Pipeline's Bill by 44% Without Weakening a Single Gate* | **latest** |
-| [v1](v1/) | *Agents at the Gate: build your first agentic SDLC* | frozen |
+| **[v2](v2/)** | *How I Cut My AI Coding Bill Almost in Half. And How You Can Copy It This Week.* — full cost optimization; all changes listed in [v2/CHANGES.md](v2/CHANGES.md) | **latest** |
+| [v1](v1/) | *Vibe Coding Is Not for Production: How to Build Your First AI SDLC* | frozen |
 
 Start with the latest version's [README](v2/README.md) — it explains the
 entry points, the install order, and how to run your first story through
