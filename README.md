@@ -12,9 +12,10 @@ forever; improvements land as the next version.
 
 | Version | Pairs with | Status |
 |---|---|---|
-| **[v1](v1/)** | *Agents at the Gate: build your first agentic SDLC* | **latest** |
+| **[v2](v2/)** | *How I Cut My Agentic Pipeline's Bill by 44% Without Weakening a Single Gate* | **latest** |
+| [v1](v1/) | *Agents at the Gate: build your first agentic SDLC* | frozen |
 
-Start with the latest version's [README](v1/README.md) — it explains the
+Start with the latest version's [README](v2/README.md) — it explains the
 entry points, the install order, and how to run your first story through
 the pipeline.
 

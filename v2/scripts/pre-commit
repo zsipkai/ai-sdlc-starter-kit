@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "pre-commit: running the agentic SDLC fast gate"
+SDLC_GATE_QUIET=1 bash scripts/sdlc-gate.sh --fast
