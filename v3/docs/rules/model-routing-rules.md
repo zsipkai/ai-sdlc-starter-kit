@@ -129,13 +129,18 @@ input, and thinking bills as output.
       family's **top** model and pastes the findings back — rule 4
       crosses families too: verification never downsizes, so never a
       mini/nano variant.
+    - `--auto` sends the same pack to the second family's API instead
+      (`OPENAI_API_KEY` from the environment, never stored in the repo;
+      model pinned by `SECOND_OPINION_MODEL`, default a top GPT-class
+      snapshot) and writes the findings next to the pack — the fully
+      unattended path: pack → foreign review → consolidation → fixes.
     - Findings (numbered `X-n`) enter the same severity-ranked
       consolidation as every reviewer's. **Judge, never gate**: the
       deciding gates stay mechanical scripts; no foreign model clears
       or blocks a stage by itself.
-    - Marginal cost: zero on a flat-fee chat subscription — a free
-      ensemble. When the workload outgrows copy-paste, send the same
-      pack to the other family's API; only the transport changes.
+    - Marginal cost: zero on a flat-fee chat subscription via the
+      paste path; `--auto` bills cents per review to the API account —
+      automate the transport when volume justifies paying for it.
     - The pack doubles as the isolation test: a model with no repo
       access must be able to judge from the pack alone. If it can't,
       the change record was incomplete — that is a finding.

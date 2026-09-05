@@ -73,8 +73,9 @@ diet, fan-out-to-judge) — lives in `docs/rules/model-routing-rules.md`.
 come from that report, never from memory. Rule 16 extends the judge
 fan-out across vendors: on STANDARD-and-above risk, /validate-design
 and /clear-review each add one **second-opinion reviewer from a
-different model family** — a pasted prompt pack built by
-`scripts/second-opinion.sh`, consolidated like any other reviewer's
+different model family** — a prompt pack built by
+`scripts/second-opinion.sh` (pasted by hand, or sent unattended with
+`--auto` to the second family's API), consolidated like any other reviewer's
 findings, judging but never gating — because reviewers from one family
 share that family's blind spots.
 

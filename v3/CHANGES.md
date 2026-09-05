@@ -22,7 +22,11 @@ subscription makes the extra top-tier judge free.
     workload exists")
 - **`scripts/second-opinion.sh`** — builds one self-contained prompt
   pack per stage: reviewer charter + change record (+ diff for review),
-  written to `build/`. Human pastes it out, pastes findings back.
+  written to `build/`. Human pastes it out, pastes findings back — or
+  `--auto` sends the pack to the second family's API and captures the
+  findings unattended (`OPENAI_API_KEY` from the environment;
+  `SECOND_OPINION_MODEL` pins the model, default a top GPT-class
+  snapshot; cents per review vs the free paste).
 
 ## Changed
 

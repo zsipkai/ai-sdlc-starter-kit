@@ -53,7 +53,10 @@ judge — never to type.
 2. The script emits one self-contained prompt pack: reviewer charter +
    change record (+ the diff for review). Paste it into a **top** model
    of another family (e.g. the ChatGPT desktop app if your pipeline
-   runs Claude-class models); paste the findings back.
+   runs Claude-class models); paste the findings back. Or add `--auto`
+   and the script sends the pack to the other family's API itself
+   (`export OPENAI_API_KEY` first) — fully unattended, cents per review
+   instead of a free paste.
 3. The findings join the same severity-ranked consolidation as every
    reviewer's, numbered `X-n`. **Judge, never gate** — the deciding
    gates stay mechanical scripts.

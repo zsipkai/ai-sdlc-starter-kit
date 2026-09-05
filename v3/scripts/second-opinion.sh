@@ -9,14 +9,20 @@
 # must be able to judge from this file alone. If it can't, the change
 # record was incomplete — that is a finding, not a formatting problem.
 #
-# Usage: bash scripts/second-opinion.sh STORY-NNN design|review
+# Usage: bash scripts/second-opinion.sh STORY-NNN design|review [--auto]
+#   --auto  send the pack to the second family's API instead of pasting
+#           (OPENAI_API_KEY from the environment, never stored in the
+#           repo; per-token cost on that account — the manual paste
+#           stays the free path).
 # Adjust the diff base below if your integration branch is not `main`.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-STORY="${1:?usage: second-opinion.sh STORY-NNN design|review}"
-STAGE="${2:?usage: second-opinion.sh STORY-NNN design|review}"
+STORY="${1:?usage: second-opinion.sh STORY-NNN design|review [--auto]}"
+STAGE="${2:?usage: second-opinion.sh STORY-NNN design|review [--auto]}"
+AUTO=0
+[ "${3:-}" = "--auto" ] && AUTO=1
 RECORD="docs/changeRecords/${STORY}.md"
 [ -f "$RECORD" ] || { echo "No change record at $RECORD" >&2; exit 1; }
 case "$STAGE" in
@@ -71,5 +77,38 @@ OUT="build/second-opinion-${STORY}-${STAGE}.md"
 } > "$OUT"
 
 echo "Prompt pack: $OUT ($(wc -l < "$OUT" | tr -d ' ') lines)"
-echo "Paste it into a TOP model of a different family (rule 4 crosses"
-echo "families — verification never downsizes), then paste the findings back."
+
+if [ "$AUTO" = "1" ]; then
+  : "${OPENAI_API_KEY:?--auto needs OPENAI_API_KEY exported in the environment}"
+  # Top tier only (rule 4 crosses families). Snapshot — update as the lineup changes.
+  MODEL="${SECOND_OPINION_MODEL:-gpt-5.1}"
+  FINDINGS="build/second-opinion-${STORY}-${STAGE}-findings.md"
+  python3 - "$OUT" "$MODEL" > "$FINDINGS" <<'PY'
+import json, os, sys, urllib.request
+pack = open(sys.argv[1], encoding="utf-8").read()
+req = urllib.request.Request(
+    "https://api.openai.com/v1/chat/completions",
+    data=json.dumps({"model": sys.argv[2],
+                     "messages": [{"role": "user", "content": pack}]}).encode(),
+    headers={"Authorization": "Bearer " + os.environ["OPENAI_API_KEY"],
+             "Content-Type": "application/json"})
+try:
+    with urllib.request.urlopen(req, timeout=600) as r:
+        body = json.load(r)
+except urllib.error.HTTPError as e:
+    sys.stderr.write("OpenAI API error %s: %s\n"
+                     % (e.code, e.read().decode(errors="replace")[:500]))
+    sys.exit(1)
+print(body["choices"][0]["message"]["content"])
+u = body.get("usage", {})
+sys.stderr.write("usage: %s prompt + %s completion tokens (%s)\n"
+                 % (u.get("prompt_tokens", "?"),
+                    u.get("completion_tokens", "?"), sys.argv[2]))
+PY
+  echo "Second opinion ($MODEL) → $FINDINGS"
+  echo "Consolidate its X-n rows like any reviewer's — judge, never gate."
+else
+  echo "Paste it into a TOP model of a different family (rule 4 crosses"
+  echo "families — verification never downsizes), then paste the findings back."
+  echo "(Or re-run with --auto to send it to the second family's API.)"
+fi
