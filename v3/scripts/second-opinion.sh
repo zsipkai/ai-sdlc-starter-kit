@@ -83,21 +83,21 @@ if [ "$AUTO" = "1" ]; then
   # Top tier only (rule 4 crosses families). Snapshot — update as the lineup changes.
   MODEL="${SECOND_OPINION_MODEL:-gpt-5.1}"
   FINDINGS="build/second-opinion-${STORY}-${STAGE}-findings.md"
-  python3 - "$OUT" "$MODEL" > "$FINDINGS" <<'PY'
-import json, os, sys, urllib.request
-pack = open(sys.argv[1], encoding="utf-8").read()
-req = urllib.request.Request(
-    "https://api.openai.com/v1/chat/completions",
-    data=json.dumps({"model": sys.argv[2],
-                     "messages": [{"role": "user", "content": pack}]}).encode(),
-    headers={"Authorization": "Bearer " + os.environ["OPENAI_API_KEY"],
-             "Content-Type": "application/json"})
-try:
-    with urllib.request.urlopen(req, timeout=600) as r:
-        body = json.load(r)
-except urllib.error.HTTPError as e:
-    sys.stderr.write("OpenAI API error %s: %s\n"
-                     % (e.code, e.read().decode(errors="replace")[:500]))
+  PAYLOAD="build/second-opinion-${STORY}-${STAGE}-payload.json"
+  RESPONSE="build/second-opinion-${STORY}-${STAGE}-response.json"
+  # Python only encodes/decodes JSON; curl carries the HTTPS call (it
+  # uses the system trust store, unlike some local Python installs).
+  python3 -c 'import json,sys; print(json.dumps({"model": sys.argv[2], "messages": [{"role": "user", "content": open(sys.argv[1], encoding="utf-8").read()}]}))' \
+    "$OUT" "$MODEL" > "$PAYLOAD"
+  curl -sS --max-time 600 https://api.openai.com/v1/chat/completions \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data-binary @"$PAYLOAD" > "$RESPONSE"
+  python3 - "$RESPONSE" "$MODEL" > "$FINDINGS" <<'PY'
+import json, sys
+body = json.load(open(sys.argv[1], encoding="utf-8"))
+if "error" in body:
+    sys.stderr.write("OpenAI API error: %s\n" % json.dumps(body["error"])[:500])
     sys.exit(1)
 print(body["choices"][0]["message"]["content"])
 u = body.get("usage", {})
