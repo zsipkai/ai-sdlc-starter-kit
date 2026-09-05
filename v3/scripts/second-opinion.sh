@@ -79,7 +79,15 @@ OUT="build/second-opinion-${STORY}-${STAGE}.md"
 echo "Prompt pack: $OUT ($(wc -l < "$OUT" | tr -d ' ') lines)"
 
 if [ "$AUTO" = "1" ]; then
-  : "${OPENAI_API_KEY:?--auto needs OPENAI_API_KEY exported in the environment}"
+  if [ -z "${OPENAI_API_KEY:-}" ] && [ -n "${SECOND_OPINION_KEY_CMD:-}" ]; then
+    # Optional: point SECOND_OPINION_KEY_CMD at your secret manager —
+    # a command that prints the key (e.g. `op read op://...`, or an
+    # `aws lambda get-function-configuration --query ...` lookup). The
+    # key lives only in this process's environment; never in the repo.
+    OPENAI_API_KEY=$(eval "$SECOND_OPINION_KEY_CMD")
+    export OPENAI_API_KEY
+  fi
+  : "${OPENAI_API_KEY:?--auto needs OPENAI_API_KEY (export it, or set SECOND_OPINION_KEY_CMD to a command that prints it)}"
   # Top tier only (rule 4 crosses families). Snapshot — update as the lineup changes.
   MODEL="${SECOND_OPINION_MODEL:-gpt-5.1}"
   FINDINGS="build/second-opinion-${STORY}-${STAGE}-findings.md"
