@@ -72,7 +72,11 @@ The tier names are the contract; the model names are a snapshot.
    budget, split the story, or escalate the tier (a cheap model burning
    its budget usually means the plan was under-specified — fix the plan).
 10. **Every stage appends its spend** to the change record
-    (`Tokens spent (<stage>): <n> — <note>`). `scripts/cost-report.sh`
+    (`Tokens spent (<stage>): <n> — <note>`). **The orchestrator writes
+    the ledger line from harness-measured usage — never the executor**:
+    a subagent's self-estimate is a lead, not a number (a live run
+    measured 183k against the executor's 150k guess, and its inline
+    self-report double-counted the story). `scripts/cost-report.sh`
     aggregates these lines across all records — the repo computes its
     own bill, and cost claims come from that report, never from memory.
 
